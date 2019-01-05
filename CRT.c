@@ -718,8 +718,8 @@ void CRT_setColors(int colorScheme) {
    for (int i = 0; i < 8; i++) {
       for (int j = 0; j < 8; j++) {
          if (ColorIndex(i,j) != ColorPairGrayBlack) {
-            int bg = (colorScheme != COLORSCHEME_BLACKNIGHT)
-                     ? (j==0 ? -1 : j)
+            int bg = (colorScheme != COLORSCHEME_BLACKNIGHT && j==0)
+                     ? -1
                      : j;
             init_pair(ColorIndex(i,j), i, bg);
          }
