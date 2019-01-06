@@ -201,8 +201,8 @@ int main(int argc, char** argv) {
 
    if (flags.delay != -1)
       settings->delay = flags.delay;
-   if (!flags.useColors) 
-      settings->colorScheme = COLORSCHEME_MONOCHROME;
+   /*if (!flags.useColors) 
+      settings->colorScheme = COLORSCHEME_MONOCHROME;*/
    if (flags.treeView)
       settings->treeView = true;
 
