@@ -1,5 +1,8 @@
 The purpose of this fork is to replace hardcoded color schemes and color values with user manipulable ones.
 
+****** NOTE ******
+This shares the same htoprc configuration file with original htop. Make sure color_scheme=0 in htoprc if you crash trying to run this.
+
 I am mostly undertaking this small endeavor because:
       1. none of the schemes match my backgrounds or window manager
       2. practical application / learning C
