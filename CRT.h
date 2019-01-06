@@ -47,17 +47,6 @@ typedef enum TreeStr_ {
    TREE_STR_COUNT
 } TreeStr;
 
-typedef enum ColorSchemes_ {
-   COLORSCHEME_DEFAULT = 0,
-   COLORSCHEME_MONOCHROME = 1,
-   COLORSCHEME_BLACKONWHITE = 2,
-   COLORSCHEME_LIGHTTERMINAL = 3,
-   COLORSCHEME_MIDNIGHT = 4,
-   COLORSCHEME_BLACKNIGHT = 5,
-   COLORSCHEME_BROKENGRAY = 6,
-   LAST_COLORSCHEME = 7,
-} ColorSchemes;
-
 typedef enum ColorElements_ {
    RESET_COLOR,
    DEFAULT_COLOR,
@@ -136,13 +125,15 @@ extern bool CRT_utf8;
 
 #endif
 
+int DIREC_BUF;
+
 extern const char **CRT_treeStr;
 
 extern int CRT_delay;
 
 int* CRT_colors;
 
-extern int CRT_colorSchemes[LAST_COLORSCHEME][LAST_COLORELEMENT];
+int **CRT_colorSchemes;  
 
 extern int CRT_cursorX;
 
@@ -170,7 +161,7 @@ void CRT_restorePrivileges();
 
 /* Turn setuid operations into NOPs */
 
-#ifndef CRT_dropPrivileges
+#ifndef CRT_dropPrivileges3
 #define CRT_dropPrivileges()
 #define CRT_restorePrivileges()
 #endif
