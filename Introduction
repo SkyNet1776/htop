@@ -32,7 +32,7 @@ What i need to improve:
 - add redundancy for errors 
 (my code has almost none)
       all directory/file reading and opening in CRT.c
-      when user has theme saved in settings and theme is deleted (crashes)
+      when user has theme saved in settings and theme is deleted (crashes-- due to the htoprc config file setting setting theme)
 
 - reinclude hardcoded default and monochrome color schemes, reactivate code related to both
 (i removed most code related to established themes since i ripped them all out. anything related to monochrome i commented out)
