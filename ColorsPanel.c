@@ -36,16 +36,7 @@ typedef struct ColorsPanel_ {
 
 static const char* const ColorsFunctions[] = {"      ", "      ", "      ", "      ", "      ", "      ", "      ", "      ", "      ", "Done  ", NULL};
 
-static const char* const ColorSchemeNames[] = {
-   "Default",
-   "Monochromatic",
-   "Black on White",
-   "Light Terminal",
-   "MC",
-   "Black Night",
-   "Broken Gray",
-   NULL
-};
+const char *ColorSchemeNames[999]; //MAKE THIS DYNAMIC LATER! 
 
 static void ColorsPanel_delete(Object* object) {
    Panel* super = (Panel*) object;
