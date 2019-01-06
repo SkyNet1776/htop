@@ -232,7 +232,7 @@ static bool Settings_read(Settings* this, const char* fileName) {
       } else if (String_eq(option[0], "color_scheme")) {
          this->colorScheme = atoi(option[1]);
       
-         /*   not really sur what this is
+         /*   when k in CRT.c becomes a global var, open this back up replacing LAST_COLORSCHEME to fix crashing for missing themes
          if (this->colorScheme < 0 || this->colorScheme >= LAST_COLORSCHEME) this->colorScheme = 0;   */
          
       } else if (String_eq(option[0], "left_meters")) {
