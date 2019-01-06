@@ -27,6 +27,8 @@ typedef struct ColorsPanel_ {
 } ColorsPanel;
 
 
+const char *ColorSchemeNames[999]; //MAKE THIS DYNAMIC LATER! 
+
 extern PanelClass ColorsPanel_class;
 
 ColorsPanel* ColorsPanel_new(Settings* settings, ScreenManager* scr);
