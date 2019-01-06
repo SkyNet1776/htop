@@ -21,12 +21,18 @@ What i plan to accomplish:
 What i need to improve:
 - organization and placement of my code. making relevant sections modular functions. placing in relevant files. well thought out global vars.
 (currently really bad, i need a little more understanding of how things are linked between files first)
+      the function in CRT.c should be split into modules, 1 for reading, 1 for matching, 1 for assigning. 
+      use one of said modules to provide array length for ColorSchemeNames (order of precedence for linked files?)
 
 - all memory dynamically allocated 
 (im actually ok at this, but theres 1 array i set with an arbitrarily high number until i get better at above)
+      const char *ColorSchemeNames[999]; --- ColorsPanel.c
+      char FILE_READ_BUF[10]; --- CRT.c this really needs to be changed. some attribute left shifts go ~20ish bits
 
 - add redundancy for errors 
 (my code has almost none)
+      all directory/file reading and opening in CRT.c
+      when user has theme saved in settings and theme is deleted (crashes)
 
 - reinclude hardcoded default and monochrome color schemes, reactivate code related to both
 (i removed most code related to established themes since i ripped them all out. anything related to monochrome i commented out)
