@@ -4,7 +4,7 @@ I am mostly undertaking this small endeavor because:
       1. none of the schemes match my backgrounds or window manager
       2. practical application / learning C
       
-Due to that, much of my code is probably very rough-- but im not experienced enough to understand explicitly why. As
+Due to that, much of my code is very rough-- but im not experienced enough to know exactly how. As
 part of moving forward I plan to continually revise my work. Consequently this file will be kept updated
 as to what files and sections of code are relevent for the project, and i'll likely add my own style of 
 comments/documentation as I continue to learn. Hopefully these will be helpful to you in at least some way,
@@ -37,5 +37,6 @@ ColorsPanel.c     - deals with theme names
 htop.c            - checks relating to monochrome, other themes
 Meter.c           - checks related to monochrome (changing the bar symbol etc) 
 Action.c          - more checks similiar to above 2
+Settings.c        - check against the lastcolorscheme (no longer exists)
 
 If you see anything in my code and want to give me advice please pull it and talk to me about it. 
