@@ -7,7 +7,6 @@ in the source distribution for its full text.
 
 #include "config.h"
 #include "CRT.h"
-#include "ColorsPanel.h"
 
 #include "StringUtils.h"
 #include "RichString.h"
@@ -156,8 +155,6 @@ bool CRT_utf8 = false;
 
 #endif
 
-int DIREC_BUF;
-
 const char **CRT_treeStr = CRT_treeStrAscii;
 
 static bool CRT_hasColors;
@@ -165,9 +162,15 @@ static bool CRT_hasColors;
 int CRT_delay = 0;
 
 int* CRT_colors;
+                                       /* these are mine from here*/
+int **CRT_colorSchemes;
 
-int **CRT_colorSchemes;  
+char **FILE_NAME_M;
 
+char *HTOP_FILE_PATH;
+
+int LAST_COLOR_SCHEME_ENTRY;
+                                       /* to here */
 int CRT_cursorX = 0;
 
 int CRT_scrollHAmount = 5;
@@ -234,144 +237,9 @@ void CRT_restorePrivileges() {
 
 void CRT_init(int delay, int colorScheme) {
    
-/* Please rip this code apart */  
-   
-   FILE *fp;
-   DIREC_BUF=0;
-	int h=0;
-	int j=0;
-	int k=0;
-	int l=0;
-	int m=0;
+   USER_THEME_FIND();
+   USER_THEME_ASSIGN();
 
-	char *HTOP_PATH={"/.config/htop/"};
-
-	int HTOP_PATH_LEN;
-	HTOP_PATH_LEN=strlen(HTOP_PATH);
-
-	char *HOME_PATH;
-	HOME_PATH=getenv("HOME");
-
-	int HOME_PATH_LEN;
-	HOME_PATH_LEN=strlen(HOME_PATH);
-
-	int HFP_BUF;
-	HFP_BUF=(HOME_PATH_LEN + HTOP_PATH_LEN);
-
-	char HTOP_FILE_PATH[HFP_BUF];
-
-	sprintf(HTOP_FILE_PATH, "%s%s", HOME_PATH, HTOP_PATH);
-
-	DIR *DIRECT;
-	DIRECT = opendir(HTOP_FILE_PATH);
-
-	if (DIRECT != NULL)
-	{
-		closedir(DIRECT);
-	}
-
-	else
-
-	{
-		exit(1);
-	}
-
-	struct dirent *entry;
-
-	opendir(HTOP_FILE_PATH);
-
-	while ((entry = readdir(DIRECT)) != NULL)
-	{
-		if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
-		{
-			h++;
-		}
-	}
-
-	rewinddir(DIRECT);
-
-	char *FILE_NAME[h];
-	char *FILE_NAME_M[h];
-	int FILE_NAME_LEN[h];
-
-	opendir(HTOP_FILE_PATH);
-
-	while ((entry = readdir(DIRECT)) != NULL)
-	{
-		if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
-		{
-			int FILE_NAME_BUF=strlen(entry->d_name);
-			FILE_NAME[DIREC_BUF] = malloc(FILE_NAME_BUF+1);
-
-			strcpy(FILE_NAME[DIREC_BUF], entry->d_name);
-			FILE_NAME_LEN[DIREC_BUF] = FILE_NAME_BUF;
-			DIREC_BUF++;
-		}
-	}
-
-	closedir(DIRECT);
-
-	char FILE_TYPE[]=".theme";
-	int FILE_TYPE_LEN = strlen(FILE_TYPE);
-   
-
-	for (j=0; j < DIREC_BUF; j++)
-	{
-		if (FILE_NAME_LEN[j] > FILE_TYPE_LEN)
-		{
-			char FILE_TYPE_COMP[FILE_TYPE_LEN];
-			int OFFSET = FILE_NAME_LEN[j] - FILE_TYPE_LEN;
-
-			sprintf(FILE_TYPE_COMP,"%s", (FILE_NAME[j] + OFFSET));
-
-			int CHECK=strcmp(FILE_TYPE_COMP,FILE_TYPE);
-
-			if (CHECK == 0)
-			{
-				FILE_NAME_M[k]=FILE_NAME[j];
-            ColorSchemeNames[k]=malloc(sizeof(ColorSchemeNames));
-            ColorSchemeNames[k]=FILE_NAME_M[k];
-				k++;
-			}
-		}
-	}
-	
-   CRT_colorSchemes=malloc((sizeof(CRT_colorSchemes)*k));
-   
-	for (l=0; l < k; l++)
-	{
-      CRT_colorSchemes[l]=malloc((sizeof(int) * LAST_COLORELEMENT));
-
-		int HTOP_FILE_PATH_LEN;
-		HTOP_FILE_PATH_LEN=strlen(HTOP_FILE_PATH);
-
-		int FILE_PATH_BUF;
-		FILE_PATH_BUF=(HTOP_FILE_PATH_LEN + strlen(FILE_NAME_M[l]));
-
-		char FILE_PATH[FILE_PATH_BUF+1];
-
-		sprintf(FILE_PATH,"%s%s",HTOP_FILE_PATH, FILE_NAME_M[l]);
-
-      /* at 15 character buffer, even with 256 colors initialized and the resulting tens of millions of resulting color pairs, this would cover it. 8 for the characters, 1 for the newline, and 1 for the null. make it dynamic later anyway */
-		char FILE_READ_BUF[10]; 
-
-		fp=fopen(FILE_PATH, "r");
-
-		if (fp != NULL)
-		{
-
-			for (m=0; m < LAST_COLORELEMENT; m++)
-			{
-				fgets(FILE_READ_BUF, sizeof FILE_READ_BUF, fp);
-				CRT_colorSchemes[l][m]=(atoi(FILE_READ_BUF));
-			}
-		}
-
-		fclose(fp);
-	}
-   
-/* you can stop ripping apart here */
-   
    initscr();
    noecho();
    CRT_delay = delay;
@@ -452,6 +320,141 @@ void CRT_init(int delay, int colorScheme) {
 
 }
 
+int USER_THEME_FIND() {
+   int h=0;
+   int i=0;
+   int j=0;
+	int k=0;
+
+	char *HTOP_PATH={"/.config/htop/"};
+   int HTP_LEN = strlen(HTOP_PATH);
+
+	char *HOME_PATH;
+	HOME_PATH=getenv("HOME");
+   int HP_LEN = strlen(HOME_PATH);
+
+   HTOP_FILE_PATH=malloc(HTP_LEN + HP_LEN + 1);
+
+   sprintf(HTOP_FILE_PATH, "%s%s", HOME_PATH, HTOP_PATH);
+   
+	DIR *DIRECT;
+   
+	DIRECT = opendir(HTOP_FILE_PATH);   
+   
+   
+	if (DIRECT != NULL)
+	{
+		closedir(DIRECT);
+	}
+
+	else
+
+	{
+		exit(1);
+	}
+
+	struct dirent *entry;
+
+	opendir(HTOP_FILE_PATH);
+
+	while ((entry = readdir(DIRECT)) != NULL)      //if i play this out in my head, it means h will be advanced 1 more time when it actually is null. is that right? would explain the problems in ColorsPanel.h. i'll need to review readdir again before implementing anything to fix this (if it even 'needs' to be fixed?)
+	{
+		if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+		{
+			h++;
+		}
+	}
+
+	rewinddir(DIRECT);
+
+   // output h and see if its 1 position beyond the number of files in directory
+   
+	char *FILE_NAME[h];
+	int FILE_NAME_LEN[h];
+   FILE_NAME_M=malloc((sizeof(FILE_NAME_M)*h));
+    
+	opendir(HTOP_FILE_PATH);
+
+	while ((entry = readdir(DIRECT)) != NULL)
+	{
+		if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+		{
+			FILE_NAME[i] = malloc(strlen(entry->d_name)+1);
+         FILE_NAME_LEN[i] = strlen(entry->d_name);
+			strcpy(FILE_NAME[i], entry->d_name);
+			i++;
+		}
+	}
+
+	closedir(DIRECT);
+
+	char FILE_TYPE[]=".theme";
+	int FILE_TYPE_LEN = strlen(FILE_TYPE);
+   
+
+	for (j=0; j < i; j++)
+	{
+		if (FILE_NAME_LEN[j] > FILE_TYPE_LEN)
+		{
+			char FILE_TYPE_COMP[FILE_TYPE_LEN];
+			int OFFSET = FILE_NAME_LEN[j] - FILE_TYPE_LEN;
+
+			sprintf(FILE_TYPE_COMP,"%s", (FILE_NAME[j] + OFFSET));
+
+			int CHECK=strcmp(FILE_TYPE_COMP,FILE_TYPE);
+
+			if (CHECK == 0)
+			{
+				FILE_NAME_M[k]=FILE_NAME[j];
+				k++;
+			}
+		}
+	}
+	
+	LAST_COLOR_SCHEME_ENTRY=k;
+
+	return (0);
+}	
+
+void USER_THEME_ASSIGN(void) {
+   
+   FILE *fp;
+   int l = 0;
+   int m = 0;
+   CRT_colorSchemes=malloc((sizeof(CRT_colorSchemes)*LAST_COLOR_SCHEME_ENTRY));   //globally defined CRT.c
+   
+	for (l=0; l < LAST_COLOR_SCHEME_ENTRY; l++) //redo how memory is allocated here
+	{
+      CRT_colorSchemes[l]=malloc((sizeof(int) * LAST_COLORELEMENT));
+
+		int HTOP_FILE_PATH_LEN;
+		HTOP_FILE_PATH_LEN=strlen(HTOP_FILE_PATH);
+
+		int FILE_PATH_BUF;
+		FILE_PATH_BUF=(HTOP_FILE_PATH_LEN + strlen(FILE_NAME_M[l]));
+
+		char FILE_PATH[FILE_PATH_BUF+1];
+
+		sprintf(FILE_PATH,"%s%s",HTOP_FILE_PATH, FILE_NAME_M[l]);
+
+		char FILE_READ_BUF[12]; //this should be adequate-- even the highest shifted attribute (left shift 30) only gives values into the single billions. this gives 10 elements for the characters, 1 for the newline, and 1 for the null.
+
+		fp=fopen(FILE_PATH, "r");
+
+		if (fp != NULL)
+		{
+
+			for (m=0; m < LAST_COLORELEMENT; m++)
+			{
+				fgets(FILE_READ_BUF, sizeof FILE_READ_BUF, fp);
+				CRT_colorSchemes[l][m]=(atoi(FILE_READ_BUF));
+			}
+		}
+
+		fclose(fp);
+	}
+}
+
 void CRT_done() {
    curs_set(1);
    endwin();
@@ -487,7 +490,7 @@ void CRT_setColors(int colorScheme) {
    CRT_colorScheme = colorScheme;
 
 /* not entirely sure what this does. looks like it makes a new color, one would assume bg is background but... */   
-   
+
    for (int i = 0; i < 8; i++) {
       for (int j = 0; j < 8; j++) {
          if (ColorIndex(i,j) != ColorPairGrayBlack) {
