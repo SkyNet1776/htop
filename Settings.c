@@ -231,10 +231,7 @@ static bool Settings_read(Settings* this, const char* fileName) {
          this->delay = atoi(option[1]);
       } else if (String_eq(option[0], "color_scheme")) {
          this->colorScheme = atoi(option[1]);
-      
-         /*   when k in CRT.c becomes a global var, open this back up replacing LAST_COLORSCHEME to fix crashing for missing themes
-         if (this->colorScheme < 0 || this->colorScheme >= LAST_COLORSCHEME) this->colorScheme = 0;   */
-         
+         if (this->colorScheme < 0 || this->colorScheme >= LAST_COLOR_SCHEME_ENTRY) this->colorScheme = 0;
       } else if (String_eq(option[0], "left_meters")) {
          Settings_readMeters(this, option[1], 0);
          didReadMeters = true;
