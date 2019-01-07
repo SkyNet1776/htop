@@ -125,16 +125,20 @@ extern bool CRT_utf8;
 
 #endif
 
-int DIREC_BUF;
-
 extern const char **CRT_treeStr;
 
 extern int CRT_delay;
 
 int* CRT_colors;
+                                       /* these are mine from here*/
+int **CRT_colorSchemes;
 
-int **CRT_colorSchemes;  
+char **FILE_NAME_M;
 
+char *HTOP_FILE_PATH;
+
+int LAST_COLOR_SCHEME_ENTRY;
+                                       /* to here */
 extern int CRT_cursorX;
 
 extern int CRT_scrollHAmount;
@@ -171,6 +175,10 @@ void CRT_restorePrivileges();
 // TODO: pass an instance of Settings instead.
 
 void CRT_init(int delay, int colorScheme);
+
+int USER_THEME_FIND();
+
+void USER_THEME_ASSIGN(void);
 
 void CRT_done();
 
