@@ -36,8 +36,6 @@ typedef struct ColorsPanel_ {
 
 static const char* const ColorsFunctions[] = {"      ", "      ", "      ", "      ", "      ", "      ", "      ", "      ", "      ", "Done  ", NULL};
 
-const char *ColorSchemeNames[999]; //MAKE THIS DYNAMIC LATER! 
-
 static void ColorsPanel_delete(Object* object) {
    Panel* super = (Panel*) object;
    ColorsPanel* this = (ColorsPanel*) object;
@@ -50,7 +48,7 @@ static HandlerResult ColorsPanel_eventHandler(Panel* super, int ch) {
    
    HandlerResult result = IGNORED;
    int mark = Panel_getSelectedIndex(super);
-
+   
    switch(ch) {
    case 0x0a:
    case 0x0d:
@@ -58,7 +56,7 @@ static HandlerResult ColorsPanel_eventHandler(Panel* super, int ch) {
    case KEY_MOUSE:
    case KEY_RECLICK:
    case ' ':
-      for (int i = 0; ColorSchemeNames[i] != NULL; i++)
+      for (int i = 0; i < LAST_COLOR_SCHEME_ENTRY; i++)     // this is changed FILE_NAME_M  must have some non null data int it somewhere, that goes beyond the number of named files. look into that.
          CheckItem_set((CheckItem*)Panel_get(super, i), false);
       CheckItem_set((CheckItem*)Panel_get(super, mark), true);
       this->settings->colorScheme = mark;
@@ -96,9 +94,9 @@ ColorsPanel* ColorsPanel_new(Settings* settings, ScreenManager* scr) {
    this->settings = settings;
    this->scr = scr;
 
-   Panel_setHeader(super, "Colors");
-   for (int i = 0; ColorSchemeNames[i] != NULL; i++) {
-      Panel_add(super, (Object*) CheckItem_newByVal(xStrdup(ColorSchemeNames[i]), false));
+   Panel_setHeader(super, "Colors");    // this is changed FILE_NAME_M  must have some non null data int it somewhere, that goes beyond the number of named files. look into that.
+   for (int i = 0; i < LAST_COLOR_SCHEME_ENTRY; i++) {
+      Panel_add(super, (Object*) CheckItem_newByVal(xStrdup(FILE_NAME_M[i]), false));
    }
    CheckItem_set((CheckItem*)Panel_get(super, settings->colorScheme), true);
    return this;
