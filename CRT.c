@@ -489,7 +489,7 @@ void CRT_enableDelay() {
 void CRT_setColors(int colorScheme) {
    CRT_colorScheme = colorScheme;
 
-/* not entirely sure what this does. looks like it makes a new color, one would assume bg is background but... */   
+/* goes through every color pair and makes all the black backgrounds -1 -- transparent? */   
 
    for (int i = 0; i < 8; i++) {
       for (int j = 0; j < 8; j++) {
@@ -501,7 +501,10 @@ void CRT_setColors(int colorScheme) {
          }
       }
    }
-
+   
+   
+   /* except for grayblack, which gets set to black/black if theres more than 8 colors, and and white (gray?) / black otherwise */
+  
    int grayBlackFg = COLORS > 8 ? 8 : 0;
    int grayBlackBg = 0;
    
