@@ -1,41 +1,30 @@
 The purpose of this fork is to replace hardcoded color schemes and color values with user manipulable ones.
 
-****** NOTE ******
-This shares the same htoprc configuration file with original htop. Make sure color_scheme=0 in htoprc if you crash trying to run this.
-
 I am mostly undertaking this small endeavor because:
       1. none of the schemes match my backgrounds or window manager
       2. practical application / learning C
       
-Due to that, much of my code is very rough-- but im not experienced enough to know exactly how. As
-part of moving forward I plan to continually revise my work. Consequently this file will be kept updated
-as to what files and sections of code are relevent for the project, and i'll likely add my own style of 
-comments/documentation as I continue to learn. Hopefully these will be helpful to you in at least some way,
-because otherwise they're going to get pretty annoying. 
+Due to that, much of my code is rough-- but im continually refining it as i gain experience. I'll likely add my own 
+comments/documentation of the program to help others navigate it.
 
 What has been accomplished so far:
 - htop pulls colorschemes from colors cheme files (variable of which currently set as .theme)
-- htop populates colorscheme list in color panel based off the uploaded color schemes 
+- htop populates colorscheme list in color panel based off the uploaded color schemes
 
 What i plan to accomplish:
 - script for user to generate color scheme files (57ish line text file, with a number on each line)
 - make color values, and amount of colors user accessible. currently all defaulted as defined in curses.h library
 
 What i need to improve:
-- organization and placement of my code. making relevant sections modular functions. placing in relevant files. well thought out global vars.
-(currently really bad, i need a little more understanding of how things are linked between files first)
-      the function in CRT.c should be split into modules, 1 for reading, 1 for matching, 1 for assigning. 
-      use one of said modules to provide array length for ColorSchemeNames (order of precedence for linked files?)
+- continued improvement of organization and placement of code
 
-- all memory dynamically allocated to a proper size 
-(some allocate more than needed-- like in the range of single digit bytes. too small to be a real problem, but bad practice?)
+- refining memory allocation
 
 - add redundancy for errors 
 (my code has almost none)
       all directory/file reading and opening in CRT.c
 
-- reinclude hardcoded default and monochrome color schemes, reactivate code related to both
-(i removed most code related to established themes since i ripped them all out. anything related to monochrome i commented out)
+- reintroduce original features (mostly done)
 
 Relevant files:
 CRT.c             - the bulk of color related stuff
@@ -43,6 +32,6 @@ ColorsPanel.c     - deals with theme names
 htop.c            - checks relating to monochrome, other themes
 Meter.c           - checks related to monochrome (changing the bar symbol etc) 
 Action.c          - more checks similiar to above 2
-Settings.c        - check against the lastcolorscheme (no longer exists)
+Settings.c        - check against the lastcolorscheme (no longer exists),
 
 If you see anything in my code and want to give me advice please pull it and talk to me about it. 
