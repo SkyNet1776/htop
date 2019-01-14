@@ -1,0 +1,59 @@
+My notes from swapping out color pairs. Unobserved changes were recorded as 'dunno'. Some elements overlap/override others.
+
+      [RESET_COLOR]  //everything else process text (
+      [DEFAULT_COLOR]  //user process text 
+      [FUNCTION_BAR]  // function text at bottom
+      [FUNCTION_KEY]  // function keys at bottom
+      [PANEL_HEADER_FOCUS]  // i dunno
+      [PANEL_HEADER_UNFOCUS]  // top menu bar
+      [PANEL_SELECTION_FOCUS]  //i dunno
+      [PANEL_SELECTION_FOLLOW]  // selected bar attribute selection
+      [PANEL_SELECTION_UNFOCUS]  // i dunno
+      [FAILED_SEARCH]  // color of selected during failed search
+      [UPTIME]  // not the uptime text, despite being labeled 
+      [BATTERY]  //top bar text
+      [LARGE_NUMBER]  // tasks text
+      [METER_TEXT]  // not sure of the relationship, but affect below
+      [METER_VALUE]  // uptime counter
+      [LED_COLOR]  // dunno
+      TASKS_RUNNING]  // dunno, again
+      [PROCESS]  // dunno
+      [PROCESS_SHADOW] //second half of VIRT, RES, and SHR text
+      [PROCESS_TAG]  // entire line of any non user process
+      [PROCESS_MEGABYTES]  id assume the memory? not sure
+      [PROCESS_BASENAME]  //first half of VIRT, RES and SHR text
+      [PROCESS_TREE] // not clear (option not enabled?)
+      [PROCESS_R_STATE]  //State text for R state
+      [PROCESS_D_STATE]  //State text for D (dont see any) state 
+      [PROCESS_HIGH_PRIORITY]  //Priority level text (NI block?)
+      [PROCESS_LOW_PRIORITY]  //NI block text
+      [PROCESS_THREAD]  // not sure
+      [PROCESS_THREAD_BASENAME]  // again, not sure
+      [BAR_BORDER] // not sure?
+      [BAR_SHADOW]  //[ ] brackets for the bars
+      [SWAP]  // the background and % text for bars
+      [GRAPH_1]  // not sure?
+      [GRAPH_2]  // not sure?
+      [MEMORY_USED]  // firt part of memory bars
+      [MEMORY_BUFFERS]  // second part of memory bars
+      [MEMORY_BUFFERS_TEXT]  //im not sure?
+      [MEMORY_CACHE]  // third part of memory bars
+      [LOAD_AVERAGE_FIFTEEN]  // im not sure?
+      [LOAD_AVERAGE_FIVE]  // right block, load average
+      [LOAD_AVERAGE_ONE]  // middle block, load average
+      [LOAD]  // left block, load average
+      [HELP_BOLD]  // not sure
+      [CLOCK]  // not sure
+      [CHECK_BOX]  // checkboxes and its text
+      [CHECK_MARK]  //im not sure exactly??
+      [CHECK_TEXT]  //not sure again?
+      [HOSTNAME]  // not sure
+      [CPU_NICE]  // not sure
+      [CPU_NICE_TEXT]  // not sure
+      [CPU_NORMAL]  // CPU bars
+      [CPU_KERNEL]  //CPU bars part 2
+      [CPU_IOWAIT]  // not sure
+      [CPU_IRQ]  //  not sure
+      [CPU_SOFTIRQ]  //not sure
+      [CPU_STEAL]  // not sure
+      [CPU_GUEST]  // not sure
