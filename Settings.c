@@ -12,6 +12,7 @@ in the source distribution for its full text.
 #include "Vector.h"
 #include "CRT.h"
 
+#include <dirent.h>
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <string.h>
@@ -67,6 +68,12 @@ typedef struct Settings_ {
 #endif
 
 }*/
+
+char **FILE_NAME_M;
+
+char *htopDir = NULL;
+
+int LAST_COLOR_SCHEME_ENTRY;
 
 void Settings_delete(Settings* this) {
    free(this->filename);
@@ -164,6 +171,10 @@ static void readFields(ProcessField* fields, int* flags, const char* line) {
 }
 
 static bool Settings_read(Settings* this, const char* fileName) {
+   
+   
+   USER_THEME_FIND();
+   
    FILE* fd;
    
    CRT_dropPrivileges();
@@ -231,7 +242,7 @@ static bool Settings_read(Settings* this, const char* fileName) {
          this->delay = atoi(option[1]);
       } else if (String_eq(option[0], "color_scheme")) {
          this->colorScheme = atoi(option[1]);
-         if (this->colorScheme < 0 || this->colorScheme >= LAST_COLOR_SCHEME_ENTRY) this->colorScheme = 0;
+         if (this->colorScheme < 0 || this->colorScheme > LAST_COLOR_SCHEME_ENTRY) this->colorScheme = LAST_COLOR_SCHEME_ENTRY;
       } else if (String_eq(option[0], "left_meters")) {
          Settings_readMeters(this, option[1], 0);
          didReadMeters = true;
@@ -364,7 +375,7 @@ Settings* Settings_new(int cpuCount) {
       if (!home) home = "";
       const char* xdgConfigHome = getenv("XDG_CONFIG_HOME");
       char* configDir = NULL;
-      char* htopDir = NULL;
+      //char* htopDir = NULL;                                                 made into a global
       if (xdgConfigHome) {
          this->filename = String_cat(xdgConfigHome, "/htop/htoprc");
          configDir = xStrdup(xdgConfigHome);
@@ -372,14 +383,14 @@ Settings* Settings_new(int cpuCount) {
       } else {
          this->filename = String_cat(home, "/.config/htop/htoprc");
          configDir = String_cat(home, "/.config");
-         htopDir = String_cat(home, "/.config/htop");
+         htopDir = String_cat(home, "/.config/htop/");
       }
       legacyDotfile = String_cat(home, "/.htoprc");
       
       CRT_dropPrivileges();
       (void) mkdir(configDir, 0700);
       (void) mkdir(htopDir, 0700);
-      free(htopDir);
+      //free(htopDir);                                                     i need you now bby
       free(configDir);
       struct stat st;
       int err = lstat(legacyDotfile, &st);
@@ -428,3 +439,102 @@ void Settings_invertSortOrder(Settings* this) {
    else
       this->direction = 1;
 }
+
+int USER_THEME_FIND() {
+   int h=0;
+   int i=0;
+   int j=0;
+	int k=0;
+
+   /*
+	char *HTOP_PATH={"/.config/htop/"};
+   int HTP_LEN = strlen(HTOP_PATH);
+
+	char *HOME_PATH;
+	HOME_PATH=getenv("HOME");
+   int HP_LEN = strlen(HOME_PATH);
+
+   HTOP_FILE_PATH=malloc(HTP_LEN + HP_LEN + 1);
+
+   sprintf(HTOP_FILE_PATH, "%s%s", HOME_PATH, HTOP_PATH);
+   */
+   
+   
+	DIR *DIRECT;
+   
+	DIRECT = opendir(htopDir);   
+   
+   
+	if (DIRECT != NULL)
+	{
+		closedir(DIRECT);
+	}
+
+	else
+
+	{
+		exit(1);
+	}
+
+	struct dirent *entry;
+
+	opendir(htopDir);
+
+	while ((entry = readdir(DIRECT)) != NULL)      //if i play this out in my head, it means h will be advanced 1 more time when it actually is null. is that right? would explain the problems in ColorsPanel.h. i'll need to review readdir again before implementing anything to fix this (if it even 'needs' to be fixed?)
+	{
+		if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+		{
+			h++;
+		}
+	}
+
+	rewinddir(DIRECT);
+
+   // output h and see if its 1 position beyond the number of files in directory
+   
+	char *FILE_NAME[h];
+	int FILE_NAME_LEN[h];
+   FILE_NAME_M=malloc((sizeof(FILE_NAME_M)*h));
+    
+	opendir(htopDir);
+
+	while ((entry = readdir(DIRECT)) != NULL)
+	{
+		if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+		{
+			FILE_NAME[i] = malloc(strlen(entry->d_name)+1);
+         FILE_NAME_LEN[i] = strlen(entry->d_name);
+			strcpy(FILE_NAME[i], entry->d_name);
+			i++;
+		}
+	}
+
+	closedir(DIRECT);
+
+	char FILE_TYPE[]=".theme";
+	int FILE_TYPE_LEN = strlen(FILE_TYPE);
+   
+
+	for (j=0; j < i; j++)
+	{
+		if (FILE_NAME_LEN[j] > FILE_TYPE_LEN)
+		{
+			char FILE_TYPE_COMP[FILE_TYPE_LEN];
+			int OFFSET = FILE_NAME_LEN[j] - FILE_TYPE_LEN;
+
+			sprintf(FILE_TYPE_COMP,"%s", (FILE_NAME[j] + OFFSET));
+
+			int CHECK=strcmp(FILE_TYPE_COMP,FILE_TYPE);
+
+			if (CHECK == 0)
+			{
+				FILE_NAME_M[k]=FILE_NAME[j];
+				k++;
+			}
+		}
+	}
+	
+	LAST_COLOR_SCHEME_ENTRY=k;
+
+	return (0);
+}	
