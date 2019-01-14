@@ -56,7 +56,7 @@ static HandlerResult ColorsPanel_eventHandler(Panel* super, int ch) {
    case KEY_MOUSE:
    case KEY_RECLICK:
    case ' ':
-      for (int i = 0; i < LAST_COLOR_SCHEME_ENTRY; i++)     // this is changed FILE_NAME_M  must have some non null data int it somewhere, that goes beyond the number of named files. look into that.
+      for (int i = 0; i <= LAST_COLOR_SCHEME_ENTRY; i++)     // this is changed FILE_NAME_M  must have some non null data int it somewhere, that goes beyond the number of named files. look into that.
          CheckItem_set((CheckItem*)Panel_get(super, i), false);
       CheckItem_set((CheckItem*)Panel_get(super, mark), true);
       this->settings->colorScheme = mark;
@@ -95,7 +95,7 @@ ColorsPanel* ColorsPanel_new(Settings* settings, ScreenManager* scr) {
    this->scr = scr;
 
    Panel_setHeader(super, "Colors");    // this is changed FILE_NAME_M  must have some non null data int it somewhere, that goes beyond the number of named files. look into that.
-   for (int i = 0; i < LAST_COLOR_SCHEME_ENTRY; i++) {
+   for (int i = 0; i <= LAST_COLOR_SCHEME_ENTRY; i++) {
       Panel_add(super, (Object*) CheckItem_newByVal(xStrdup(FILE_NAME_M[i]), false));
    }
    CheckItem_set((CheckItem*)Panel_get(super, settings->colorScheme), true);
