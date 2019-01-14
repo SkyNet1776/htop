@@ -7,6 +7,7 @@ in the source distribution for its full text.
 
 #include "config.h"
 #include "CRT.h"
+#include "Settings.h"
 
 #include "StringUtils.h"
 #include "RichString.h"
@@ -164,12 +165,6 @@ int CRT_delay = 0;
 int* CRT_colors;
                                        /* these are mine from here*/
 int **CRT_colorSchemes;
-
-char **FILE_NAME_M;
-
-char *HTOP_FILE_PATH;
-
-int LAST_COLOR_SCHEME_ENTRY;
                                        /* to here */
 int CRT_cursorX = 0;
 
@@ -226,7 +221,7 @@ void CRT_restorePrivileges() {
 
 /* Turn setuid operations into NOPs */
 
-#ifndef CRT_dropPrivileges3
+#ifndef CRT_dropPrivileges
 #define CRT_dropPrivileges()
 #define CRT_restorePrivileges()
 #endif
@@ -237,8 +232,8 @@ void CRT_restorePrivileges() {
 
 void CRT_init(int delay, int colorScheme) {
    
-   USER_THEME_FIND();
    USER_THEME_ASSIGN();
+   DEFAULT_THEME();
 
    initscr();
    noecho();
@@ -320,141 +315,6 @@ void CRT_init(int delay, int colorScheme) {
 
 }
 
-int USER_THEME_FIND() {
-   int h=0;
-   int i=0;
-   int j=0;
-	int k=0;
-
-	char *HTOP_PATH={"/.config/htop/"};
-   int HTP_LEN = strlen(HTOP_PATH);
-
-	char *HOME_PATH;
-	HOME_PATH=getenv("HOME");
-   int HP_LEN = strlen(HOME_PATH);
-
-   HTOP_FILE_PATH=malloc(HTP_LEN + HP_LEN + 1);
-
-   sprintf(HTOP_FILE_PATH, "%s%s", HOME_PATH, HTOP_PATH);
-   
-	DIR *DIRECT;
-   
-	DIRECT = opendir(HTOP_FILE_PATH);   
-   
-   
-	if (DIRECT != NULL)
-	{
-		closedir(DIRECT);
-	}
-
-	else
-
-	{
-		exit(1);
-	}
-
-	struct dirent *entry;
-
-	opendir(HTOP_FILE_PATH);
-
-	while ((entry = readdir(DIRECT)) != NULL)      //if i play this out in my head, it means h will be advanced 1 more time when it actually is null. is that right? would explain the problems in ColorsPanel.h. i'll need to review readdir again before implementing anything to fix this (if it even 'needs' to be fixed?)
-	{
-		if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
-		{
-			h++;
-		}
-	}
-
-	rewinddir(DIRECT);
-
-   // output h and see if its 1 position beyond the number of files in directory
-   
-	char *FILE_NAME[h];
-	int FILE_NAME_LEN[h];
-   FILE_NAME_M=malloc((sizeof(FILE_NAME_M)*h));
-    
-	opendir(HTOP_FILE_PATH);
-
-	while ((entry = readdir(DIRECT)) != NULL)
-	{
-		if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
-		{
-			FILE_NAME[i] = malloc(strlen(entry->d_name)+1);
-         FILE_NAME_LEN[i] = strlen(entry->d_name);
-			strcpy(FILE_NAME[i], entry->d_name);
-			i++;
-		}
-	}
-
-	closedir(DIRECT);
-
-	char FILE_TYPE[]=".theme";
-	int FILE_TYPE_LEN = strlen(FILE_TYPE);
-   
-
-	for (j=0; j < i; j++)
-	{
-		if (FILE_NAME_LEN[j] > FILE_TYPE_LEN)
-		{
-			char FILE_TYPE_COMP[FILE_TYPE_LEN];
-			int OFFSET = FILE_NAME_LEN[j] - FILE_TYPE_LEN;
-
-			sprintf(FILE_TYPE_COMP,"%s", (FILE_NAME[j] + OFFSET));
-
-			int CHECK=strcmp(FILE_TYPE_COMP,FILE_TYPE);
-
-			if (CHECK == 0)
-			{
-				FILE_NAME_M[k]=FILE_NAME[j];
-				k++;
-			}
-		}
-	}
-	
-	LAST_COLOR_SCHEME_ENTRY=k;
-
-	return (0);
-}	
-
-void USER_THEME_ASSIGN(void) {
-   
-   FILE *fp;
-   int l = 0;
-   int m = 0;
-   CRT_colorSchemes=malloc((sizeof(CRT_colorSchemes)*LAST_COLOR_SCHEME_ENTRY));   //globally defined CRT.c
-   
-	for (l=0; l < LAST_COLOR_SCHEME_ENTRY; l++) //redo how memory is allocated here
-	{
-      CRT_colorSchemes[l]=malloc((sizeof(int) * LAST_COLORELEMENT));
-
-		int HTOP_FILE_PATH_LEN;
-		HTOP_FILE_PATH_LEN=strlen(HTOP_FILE_PATH);
-
-		int FILE_PATH_BUF;
-		FILE_PATH_BUF=(HTOP_FILE_PATH_LEN + strlen(FILE_NAME_M[l]));
-
-		char FILE_PATH[FILE_PATH_BUF+1];
-
-		sprintf(FILE_PATH,"%s%s",HTOP_FILE_PATH, FILE_NAME_M[l]);
-
-		char FILE_READ_BUF[12]; //this should be adequate-- even the highest shifted attribute (left shift 30) only gives values into the single billions. this gives 10 elements for the characters, 1 for the newline, and 1 for the null.
-
-		fp=fopen(FILE_PATH, "r");
-
-		if (fp != NULL)
-		{
-
-			for (m=0; m < LAST_COLORELEMENT; m++)
-			{
-				fgets(FILE_READ_BUF, sizeof FILE_READ_BUF, fp);
-				CRT_colorSchemes[l][m]=(atoi(FILE_READ_BUF));
-			}
-		}
-
-		fclose(fp);
-	}
-}
-
 void CRT_done() {
    curs_set(1);
    endwin();
@@ -511,4 +371,109 @@ void CRT_setColors(int colorScheme) {
    init_pair(ColorIndexGrayBlack, grayBlackFg, grayBlackBg);
 
    CRT_colors = CRT_colorSchemes[colorScheme];
+}
+
+void USER_THEME_ASSIGN(void) {
+   
+   FILE *fp;
+   int l = 0;
+   int m = 0;
+   CRT_colorSchemes=malloc((sizeof(CRT_colorSchemes)*(LAST_COLOR_SCHEME_ENTRY+1)));   // +1 for the last entry itself (default, now)
+   
+	for (l=0; l < LAST_COLOR_SCHEME_ENTRY; l++) //redo how memory is allocated here
+	{
+      CRT_colorSchemes[l]=malloc((sizeof(int) * LAST_COLORELEMENT));
+
+		int HTOP_FILE_PATH_LEN;
+		HTOP_FILE_PATH_LEN=strlen(htopDir);
+
+		int FILE_PATH_BUF;
+		FILE_PATH_BUF=(HTOP_FILE_PATH_LEN + strlen(FILE_NAME_M[l]));
+
+		char FILE_PATH[FILE_PATH_BUF+1];
+
+		sprintf(FILE_PATH,"%s%s", htopDir, FILE_NAME_M[l]);
+
+		char FILE_READ_BUF[12]; //this should be adequate-- even the highest shifted attribute (left shift 30) only gives values into the single billions. this gives 10 elements for the characters, 1 for the newline, and 1 for the null.
+
+		fp=fopen(FILE_PATH, "r");
+
+		if (fp != NULL)
+		{
+
+			for (m=0; m < LAST_COLORELEMENT; m++)
+			{
+				fgets(FILE_READ_BUF, sizeof FILE_READ_BUF, fp);
+				CRT_colorSchemes[l][m]=(atoi(FILE_READ_BUF));
+			}
+		}
+
+		fclose(fp);
+	}
+}
+
+void DEFAULT_THEME() {
+   
+   char *DEFAULT_THEME_NAME={"Default"};
+   FILE_NAME_M[LAST_COLOR_SCHEME_ENTRY]=DEFAULT_THEME_NAME;
+   
+	CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY]=malloc((sizeof(int) * LAST_COLORELEMENT));
+   
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][0]=0;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][1]=0;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][2]=15872;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][3]=0;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][4]=14848;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][5]=14848;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][6]=15872;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][7]=15104;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][8]=16128;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][9]=13824;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][10]=2099200;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][11]=2099200;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][12]=2109440;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][13]=2099200;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][14]=2099200;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][15]=10240;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][16]=2107392;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][17]=0;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][18]=2102528;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][19]=2105344;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][20]=2048;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][21]=2099200;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][22]=2048;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][23]=10240;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][24]=2019440;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][25]=12288;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][26]=10240;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][27]=10240;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][28]=2107392;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][29]=2097152;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][30]=2102528;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][31]=12288;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][32]=2099200;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][33]=2048;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][34]=10240;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][35]=6144;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][36]=2103296;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][37]=8192;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][38]=2048;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][39]=2099200;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][40]=2097152;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][41]=2097512;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][42]=2099200;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][43]=2097152;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][44]=2048;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][45]=2097152;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][46]=0;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][47]=2097152;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][48]=6144;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][49]=2103296;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][50]=10240;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][51]=12288;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][52]=2111488;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][53]=8192;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][54]=4096;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][55]=2048;
+   CRT_colorSchemes[LAST_COLOR_SCHEME_ENTRY][56]=2048;	
 }
