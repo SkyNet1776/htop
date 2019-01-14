@@ -495,9 +495,9 @@ static Htop_Reaction actionHelp(State* st) {
    attrset(CRT_colors[DEFAULT_COLOR]);
    mvaddstr(6,0, "Type and layout of header meters are configurable in the setup screen.");
   
-   /*if (CRT_colorScheme == COLORSCHEME_MONOCHROME) {
+   if (CRT_colorScheme == LAST_COLOR_SCHEME_ENTRY) {
       mvaddstr(7, 0, "In monochrome, meters display as different chars, in order: |#*@$%&.");
-   }  */
+   } 
    
    mvaddstr( 8, 0, " Status: R: running; S: sleeping; T: traced/stopped; Z: zombie; D: disk sleep");
    for (int i = 0; helpLeft[i].info; i++) { mvaddstr(9+i, 9,  helpLeft[i].info); }
