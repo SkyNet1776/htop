@@ -1,4 +1,8 @@
-!#/bin/bash
+#!/bin/bash
+#yellow text is brown
+#bolded yellow text is yellow
+#bolded green text is gray
+#black background is transparent
 
 CTR=1
 
@@ -108,6 +112,7 @@ function FUNC_MENU {
 	echo "*****************************"
 	echo
 	echo "To print full list of values, enter P"
+	echo "To print all plain attribute values, enter A"
 	echo "To print a list of values for a specified foreground color, enter its corresponding number"
 	echo "To quit, enter Q"
 	echo
@@ -144,6 +149,11 @@ do
 		done
 	fi
 
+	if [[ $INP == "A" || $INP == "a" ]]
+	then
+		echo -e "Plain Attributes\nBold: $(( 1 << 21 ))\nUnderline: $(( 1 << 17 ))\nBlink: $(( 1 << 19 ))\nDim: $(( 1 << 20 ))\n"
+	fi
+
 	if [[ $INP == "M" || $INP == "m" ]]
 	then
 		FUNC_MENU
@@ -155,3 +165,4 @@ do
 	read INP
 	echo
 done
+
