@@ -132,12 +132,6 @@ extern int CRT_delay;
 int* CRT_colors;
                                        /* these are mine from here*/
 int **CRT_colorSchemes;
-
-char **FILE_NAME_M;
-
-char *HTOP_FILE_PATH;
-
-int LAST_COLOR_SCHEME_ENTRY;
                                        /* to here */
 extern int CRT_cursorX;
 
@@ -165,7 +159,7 @@ void CRT_restorePrivileges();
 
 /* Turn setuid operations into NOPs */
 
-#ifndef CRT_dropPrivileges3
+#ifndef CRT_dropPrivileges
 #define CRT_dropPrivileges()
 #define CRT_restorePrivileges()
 #endif
@@ -175,10 +169,6 @@ void CRT_restorePrivileges();
 // TODO: pass an instance of Settings instead.
 
 void CRT_init(int delay, int colorScheme);
-
-int USER_THEME_FIND();
-
-void USER_THEME_ASSIGN(void);
 
 void CRT_done();
 
@@ -191,5 +181,9 @@ void CRT_disableDelay();
 void CRT_enableDelay();
 
 void CRT_setColors(int colorScheme);
+
+void USER_THEME_ASSIGN(void);
+
+void DEFAULT_THEME();
 
 #endif
