@@ -58,6 +58,12 @@ typedef struct Settings_ {
 #endif
 
 
+char **FILE_NAME_M;
+
+extern char *htopDir;
+
+int LAST_COLOR_SCHEME_ENTRY;
+
 void Settings_delete(Settings* this);
 
 bool Settings_write(Settings* this);
@@ -65,5 +71,7 @@ bool Settings_write(Settings* this);
 Settings* Settings_new(int cpuCount);
 
 void Settings_invertSortOrder(Settings* this);
+
+int USER_THEME_FIND();
 
 #endif
