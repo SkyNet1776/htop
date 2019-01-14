@@ -8,23 +8,23 @@ Due to that, much of my code is rough-- but im continually refining it as i gain
 comments/documentation of the program to help others navigate it.
 
 What has been accomplished so far:
-- htop pulls colorschemes from colors cheme files (variable of which currently set as .theme)
-- htop populates colorscheme list in color panel based off the uploaded color schemes
+- htop pulls colorschemes from colors cheme files (currently set as .theme)
 
 What i plan to accomplish:
-- script for user to generate color scheme files (57ish line text file, with a number on each line)
 - make color values, and amount of colors user accessible. currently all defaulted as defined in curses.h library
 
 What i need to improve:
 - continued improvement of organization and placement of code
-
 - refining memory allocation
-
 - add redundancy for errors 
-(my code has almost none)
-      all directory/file reading and opening in CRT.c
 
-- reintroduce original features (mostly done)
+To Do:
+- Update --help regarding features (monochrome)
+- Finalize theme filename (.theme already in use)
+- Make function to remove .theme from displayed theme name
+- Make themes display in revese (currently default at bottom)
+- Add error redundancy in functions
+- Test changing colors
 
 Relevant files:
 CRT.c             - the bulk of color related stuff
