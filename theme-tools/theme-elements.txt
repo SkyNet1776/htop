@@ -1,23 +1,23 @@
 My notes from swapping out color pairs. Unobserved changes were recorded as 'dunno'. Some elements overlap/override others.
 
-      [RESET_COLOR]  //everything else process text (
+      [RESET_COLOR]  //everything else process text
       [DEFAULT_COLOR]  //user process text 
       [FUNCTION_BAR]  // function text at bottom
       [FUNCTION_KEY]  // function keys at bottom
       [PANEL_HEADER_FOCUS]  // i dunno
       [PANEL_HEADER_UNFOCUS]  // top menu bar
-      [PANEL_SELECTION_FOCUS]  //i dunno
-      [PANEL_SELECTION_FOLLOW]  // selected bar attribute selection
-      [PANEL_SELECTION_UNFOCUS]  // i dunno
-      [FAILED_SEARCH]  // color of selected during failed search
-      [UPTIME]  // not the uptime text, despite being labeled 
+      [PANEL_SELECTION_FOCUS]  //the empty space for titles in menu
+      [PANEL_SELECTION_FOLLOW]  // actively selected menu stuff
+      [PANEL_SELECTION_UNFOCUS]  // selection stuff in setup
+      [FAILED_SEARCH]  // inactively selected menu stuff
+      [UPTIME]  // all the virt text with a G
       [BATTERY]  //top bar text
       [LARGE_NUMBER]  // tasks text
       [METER_TEXT]  // not sure of the relationship, but affect below
       [METER_VALUE]  // uptime counter
-      [LED_COLOR]  // dunno
-      TASKS_RUNNING]  // dunno, again
-      [PROCESS]  // dunno
+      [LED_COLOR]  // battery stats
+      TASKS_RUNNING]  // "running" number on top bar
+      [PROCESS]  // 
       [PROCESS_SHADOW] //second half of VIRT, RES, and SHR text
       [PROCESS_TAG]  // entire line of any non user process
       [PROCESS_MEGABYTES]  id assume the memory? not sure
@@ -27,14 +27,14 @@ My notes from swapping out color pairs. Unobserved changes were recorded as 'dun
       [PROCESS_D_STATE]  //State text for D (dont see any) state 
       [PROCESS_HIGH_PRIORITY]  //Priority level text (NI block?)
       [PROCESS_LOW_PRIORITY]  //NI block text
-      [PROCESS_THREAD]  // not sure
-      [PROCESS_THREAD_BASENAME]  // again, not sure
+      [PROCESS_THREAD]  // some of the text under command block (h and k in help menu)
+      [PROCESS_THREAD_BASENAME]  // some of the text under command block (h and k in help menu)
       [BAR_BORDER] // not sure?
       [BAR_SHADOW]  //[ ] brackets for the bars
       [SWAP]  // the background and % text for bars
       [GRAPH_1]  // not sure?
       [GRAPH_2]  // not sure?
-      [MEMORY_USED]  // firt part of memory bars
+      [MEMOR2Y_USED]  // firt part of memory bars
       [MEMORY_BUFFERS]  // second part of memory bars
       [MEMORY_BUFFERS_TEXT]  //im not sure?
       [MEMORY_CACHE]  // third part of memory bars
@@ -43,7 +43,7 @@ My notes from swapping out color pairs. Unobserved changes were recorded as 'dun
       [LOAD_AVERAGE_ONE]  // middle block, load average
       [LOAD]  // left block, load average
       [HELP_BOLD]  // not sure
-      [CLOCK]  // not sure
+      [CLOCK]  // the clock, ya?
       [CHECK_BOX]  // checkboxes and its text
       [CHECK_MARK]  //im not sure exactly??
       [CHECK_TEXT]  //not sure again?
